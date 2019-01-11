@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!--<![endif]-->
+<!-- BEGIN HEAD -->
+
+<head>
+    <meta charset="utf-8" />
+    <title>任务调度系统</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <!-- 全球强制性风格 开始 -->
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet"/>
+    <link th:href="@{assets/css/font-awesome.min.css}" rel="stylesheet" />
+    <link th:href="@{assets/css/simple-line-icons.min.css}" rel="stylesheet"/>
+    <link th:href="@{assets/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{assets/css/bootstrap-switch.min.css}" rel="stylesheet"/>
+    <!-- 全球强制性风格 结束-->
+    <!-- 全球主题风格 开始 -->
+    <link th:href="@{assets/css/components-rounded.min.css}" rel="stylesheet" id="style_components"/>
+    <link th:href="@{assets/css/plugins.min.css}" rel="stylesheet"/>
+    <!-- 全球主题风格 结束 -->
+    <!-- 主题布局风格 开始 -->
+    <link th:href="@{assets/layouts/css/layout.min.css}" rel="stylesheet"/>
+    <link th:href="@{assets/layouts/css/themes/darkblue.min.css}" rel="stylesheet" id="style_color" />
+    <link th:href="@{assets/layouts/css/custom.min.css}" rel="stylesheet"/>
+    <!-- 主题布局风格 结束 -->
+    <!-- dataTable样式-->
+    <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="favicon.ico" />
+    <style>
+        table th{
+            text-align: center!important;
+        }
+    </style>
+</head>
+<!-- END HEAD -->
+
+<body class="page-header-fixed page-footer-fixed page-sidebar-closed-hide-logo page-content-white">
+<div class="page-header navbar navbar-fixed-top">
+    <div class="page-header-inner ">
+        <div class="page-logo">
+            <a href="/">
+                <img src="../assets/layouts/img/logo.png" alt="logo" class="logo-default" /> </a>
+            <div class="menu-toggler sidebar-toggler">
+                <span></span>
+            </div>
+        </div>
+        <div class="top-menu">
+            <ul class="nav navbar-nav pull-right">
+                <li class="dropdown dropdown-user">
+                    <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                        <span class="username username-hide-on-mobile">管理员</span>
+                    </a>
+                </li>
+                <li class="dropdown dropdown-quick-sidebar-toggler">
+                    <a href="javascript:;" class="dropdown-toggle">
+                        <i class="icon-logout"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="clearfix"> </div>
+<div class="page-container">
+    <div class="page-sidebar-wrapper">
+        <div class="page-sidebar navbar-collapse collapse">
+            <ul class="page-sidebar-menu  page-header-fixed " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" style="padding-top: 20px">
+                <li class="sidebar-toggler-wrapper hide">
+                    <div class="sidebar-toggler">
+                        <span></span>
+                    </div>
+                </li>
+                <li class="nav-item active open">
+                    <a href="javascript:;" class="nav-link nav-toggle">
+                        <i class="icon-home"></i>
+                        <span class="title">任务调度</span>
+                        <span class="arrow"></span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li class="nav-item start active open">
+                            <a href="/" class="nav-link ">
+                                <i class="icon-bar-chart"></i>
+                                <span class="title">任务管理</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="page-content-wrapper">
+        <div class="page-content">
+            <div class="tabbable-custom ">
+                <ul class="nav nav-tabs ">
+                    <li class="active">
+                        <a href="#tab_5_1" data-toggle="tab" aria-expanded="true">任务调度</a>
+                    </li>
+                    <li class="">
+                        <a href="#tab_5_2" data-toggle="tab" aria-expanded="false">执行结果</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_5_1">
+                        <div class="row">
+                            <div class="col-md-12"><h4>任务查询</h4></div>
+                        </div>
+                        <hr>
+                        <form class="form-horizontal" role="form" id="taskQueryForm">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        <label class="col-md-3 control-label">任务名称</label>
+                                        <div class="col-md-9">
+                                            <input type="text" name="taskName" class="form-control" placeholder="请输入名称">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="col-md-3 control-label">任务状态</label>
+                                        <div class="col-md-9">
+                                            <select class="form-control" name="taskState">
+                                                <option value="0">全部</option>
+                                                <option value="1">等待中</option>
+                                                <option value="2">正在运行</option>
+                                                <option value="3">已停止</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <div class="row text-center">
+                                    <div class="col-md-12">
+                                        <button type="button" class="btn btn-success" onclick="$('#taskDataTable').dataTable().api().ajax.reload();">查询</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button type="button" class="btn btn-primary"
+                                        data-toggle="modal" data-target="#addTaskModal">添加任务
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table id="taskDataTable" class="table table-striped table-bordered dataTable table-hover text-center"></table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab_5_2">
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- 添加任务模态框 -->
+            <div id="addTaskModal" class="modal fade" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">添加任务</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-horizontal" role="form" id="addTaskForm">
+                                <div class="form-body">
+
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <label class="col-md-2 control-label">ClassName</label>
+                                            <div class="col-md-10">
+                                                <input name="cName"  type="text" class="form-control"
+                                                       placeholder="必填" maxlength="500">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <label class="col-md-2 control-label">执行时间</label>
+                                            <div class="col-md-10">
+                                                <input name="executionTime" type="text" class="form-control"
+                                                       placeholder="必填" maxlength="50">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <label class="col-md-2 control-label">任务名称</label>
+                                            <div class="col-md-10">
+                                                <input name="name" type="text" class="form-control"
+                                                       placeholder="必填" maxlength="50">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" hidden>
+                                        <div class="col-md-12">
+                                            <label class="col-md-2 control-label">后续任务</label>
+                                            <div class="col-md-10">
+                                                <select class="form-control" name="nextTask">
+                                                    <option value="0" selected>测试</option>
+                                                    <option value="1">测试</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <label class="col-md-2 control-label">任务描述</label>
+                                            <div class="col-md-10">
+                                                <textarea name="describe" class="form-control" style="resize:none;"
+                                                          placeholder="描述" maxlength="100"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" onclick="addTaskFun();">提交</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div>
+            <!-- /.modal -->
+
+            <!-- 任务修改模态框 -->
+            <div id="taskDetailModal" class="modal fade" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">任务修改</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-horizontal" role="form" id="TaskDetailForm">
+                                <div class="form-body">
+                                    <input type="hidden" name="id">
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <label class="col-md-2 control-label">任务名称</label>
+                                            <div class="col-md-10">
+                                                <input name="name" type="text" class="form-control"
+                                                       placeholder="必填" maxlength="50">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <label class="col-md-2 control-label">ClassName</label>
+                                            <div class="col-md-10">
+                                                <input name="cName"  type="text" class="form-control"
+                                                       placeholder="必填" maxlength="500">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <label class="col-md-2 control-label">执行时间</label>
+                                            <div class="col-md-10">
+                                                <input name="executionTime" type="text" class="form-control"
+                                                       placeholder="必填" maxlength="50">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <label class="col-md-2 control-label">任务描述</label>
+                                            <div class="col-md-10">
+                                                <textarea name="describe" class="form-control" style="resize:none;"
+                                                          placeholder="描述" maxlength="100"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" onclick="updateTask();">提交</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+        </div>
+    </div>
+</div>
+
+<div class="page-footer">
+    <div class="page-footer-inner">任务调度系统</div>
+    <div class="scroll-to-top"><i class="icon-arrow-up"></i></div>
+</div>
+
+<!--[if lt IE 9]>
+<script th:src="@{assets/js/respond.min.js}"></script>
+<script th:src="@{assets/js/excanvas.min.js}"></script>
+<![endif]-->
+<!-- 核心插件 开始 -->
+<script th:src="@{assets/js/jquery.min.js}" type="text/javascript"></script>
+<script th:src="@{assets/js/jquery.slimscroll.min.js}" type="text/javascript"></script>
+<script th:src="@{assets/js/jquery.blockui.min.js}" type="text/javascript"></script>
+<script th:src="@{assets/js/bootstrap.min.js}" type="text/javascript"></script>
+<script th:src="@{assets/js/bootstrap-hover-dropdown.min.js}" type="text/javascript"></script>
+<script th:src="@{assets/js/bootstrap-switch.min.js}" type="text/javascript"></script>
+<script th:src="@{assets/js/app.min.js}" type="text/javascript"></script>
+<script th:src="@{assets/js/bootbox.min.js}" type="text/javascript"></script>
+<script src="https://cdn.datatables.net/v/bs/dt-1.10.18/datatables.min.js"></script>
+<script src="http://cdn.datatables.net/plug-ins/28e7751dbec/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+<!-- 核心插件 结束 -->
+
+<!--自封装插件-->
+<script th:src="@{js/util.js}"></script>
+
+<!--其他脚本-->
+
+
+<!-- 布局脚本 开始 -->
+<script th:src="@{assets/layouts/scripts/layout.min.js}" type="text/javascript"></script>
+<script th:src="@{assets/layouts/scripts/demo.min.js}" type="text/javascript"></script>
+<!-- 布局脚本 结束 -->
+<script>
+    $(function () {
+
+        dataTablesInit({
+            "id":"taskDataTable",
+            "api":"/api/task/pagingQueryTasks",
+            "columns": [
+                { "data": null,"type":"seN","title":"序号","orderable":false,"width":"50px"},
+                { "data": "task_class_name" ,"title":"任务类名","orderable":false},
+                { "data": "execution_time","title":"执行时间" ,"orderable":false},
+                { "data": "task_name","title":"任务名称" ,"orderable":false},
+                { "data": "task_describe","title":"任务描述","orderable":false },
+                { "data": "task_state_text","title":"任务状态","orderable":false,"width":"100px"},
+                { "data": "create_time","title":"创建时间","orderable":false,"width":"150px"},
+                { "data": "update_time","title":"修改时间","orderable":false,"width":"150px"},
+                { "data": null ,"title":"操作","orderable":false,"width":"250px","render":function (data, type, full, meta) {
+                    var buttons=[];
+                    buttons.push("<button type=\"button\" class=\"btn green btn-xs\" onclick='viewTask("+data.id+")'>修改</button>");
+                    buttons.push("<button type=\"button\" class=\"btn btn-danger btn-xs\" onclick='deleteTask("+data.id+");'>删除</button>");
+                    buttons.push("<button type=\"button\" class=\"btn btn-info btn-xs\" onclick='enabledTask("+data.id+")'>启用</button>");
+                    buttons.push("<button type=\"button\" class=\"btn btn-info btn-xs\" onclick='manualExecute("+data.id+")'>立即执行</button>");
+                    buttons.push("<button type=\"button\" class=\"btn btn-info btn-xs\" onclick='stopTask("+data.id+")'>停用</button>");
+                     return buttons.join("");
+                    }},
+            ],
+            "queryParaFn":function () {
+                return {
+                    "taskName":$.trim($("#taskQueryForm input[name=taskName]").val()),
+                    "state":$("#taskQueryForm select[name=taskState]").val(),
+                }
+            },
+        });
+
+        bindEvent();
+    });
+    function bindEvent() {
+        $("#addTaskModal").on("hide.bs.modal",function () {
+            $("#addTaskForm input[name=executionTime]").val("");
+            $("#addTaskForm input[name=cName]").val("");
+            $("#addTaskForm input[name=name]").val("");
+            $("#addTaskForm textarea[name=describe]").val("");
+        });
+        $("#taskDetailModal").on("hide.bs.modal",function () {
+            $("#TaskDetailForm input[name=taskId]").val("");
+        });
+    }
+    function queryTaskForm() {
+        $("#taskDataTable").dataTable().api().ajax.reload();
+    }
+
+    function addTaskFun() {
+        var input = {};
+        input.name = $.trim($("#addTaskForm input[name=name]").val());
+        input.cName = $.trim($("#addTaskForm input[name=cName]").val());
+        if(input.cName == ""){
+            bootbox.alert("执行源必须输入！");
+            return false;
+        }
+        if(input.name == ""){
+            bootbox.alert("任务名称为必填项！");
+            return false;
+        }
+        input.executionTime = $.trim($("#addTaskForm input[name=executionTime]").val());
+        if(input.executionTime == ""){
+            bootbox.alert("执行时间必填！");
+            return false;
+        }
+        input.describe = $.trim($("#addTaskForm textarea[name=describe]").val());
+        App.blockUI({message:"处理中...",boxed: !0});
+        $.ajax({
+            "url":"/api/task/add",
+            "type":"POST",
+            "data":input,
+            "success":function (res) {
+                $("#addTaskModal").modal("hide");
+            },
+            "error":function (e) {
+
+            },
+            "complete":function (c) {
+                bootbox.alert(c.responseJSON.message);
+                App.unblockUI();
+                $("#taskDataTable").dataTable().api().ajax.reload();
+            }
+        });
+    }
+    function deleteTask(id) {
+        if(id == undefined || id== null || id == ""){
+            bootbox.alert("数据错误！");
+            return false;
+        }
+        App.blockUI({message:"处理中...",boxed: !0});
+        $.ajax({
+            "url":"/api/task/deleteTask",
+            "type":"POST",
+            "data":{
+                "id":id,
+            },
+            "success":function (res) {
+
+            },
+            "error":function (e) {
+
+            },
+            "complete":function (c) {
+                bootbox.alert(c.responseJSON.message);
+                App.unblockUI();
+                $("#taskDataTable").dataTable().api().ajax.reload();
+            }
+        });
+    }
+    function updateTask() {
+        var input = {};
+        input.id = $("#TaskDetailForm input[name=id]").val();
+        if(input.id == undefined || input.id == null || input.id == ""){
+            bootbox.alert("数据错误！");
+            return false;
+        }
+        input.name = $.trim($("#TaskDetailForm input[name=name]").val());
+        input.cName = $.trim($("#TaskDetailForm input[name=cName]").val());
+        if(input.cName == ""){
+            bootbox.alert("执行源必须输入！");
+            return false;
+        }
+        if(input.name == ""){
+            bootbox.alert("任务名称为必填项！");
+            return false;
+        }
+        input.executionTime = $.trim($("#TaskDetailForm input[name=executionTime]").val());
+        if(input.executionTime == ""){
+            bootbox.alert("执行时间必填！");
+            return false;
+        }
+        input.describe = $.trim($("#TaskDetailForm textarea[name=describe]").val());
+        App.blockUI({message:"处理中...",boxed: !0});
+        $.ajax({
+            "url":"/api/task/updateTask",
+            "type":"POST",
+            "data":input,
+            "success":function (res) {
+                $("#taskDetailModal").modal("hide");
+            },
+            "error":function (e) {
+
+            },
+            "complete":function (c) {
+                bootbox.alert(c.responseJSON.message);
+                App.unblockUI();
+                $("#taskDataTable").dataTable().api().ajax.reload();
+            }
+        });
+    }
+    function viewTask(id) {
+        if(id == undefined || id== null || id == ""){
+            bootbox.alert("数据错误！");
+            return false;
+        }
+        App.blockUI({message:"处理中...",boxed: !0});
+        $.ajax({
+            "url":"/api/task/getTaskDetail",
+            "type":"GET",
+            "data":{
+                "id":id,
+            },
+            "success":function (res) {
+                $("#TaskDetailForm input[name=id]").val(res.task.id);
+                $("#TaskDetailForm input[name=name]").val(res.task.name);
+                $("#TaskDetailForm input[name=cName]").val(res.task.cName);
+                $("#TaskDetailForm input[name=executionTime]").val(res.task.executionTime);
+                $("#TaskDetailForm textarea[name=describe]").val(res.task.describe);
+                $("#taskDetailModal").modal("show");
+            },
+            "error":function (e) {
+                bootbox.alert(e.responseJSON.message);
+            },
+            "complete":function (c) {
+                App.unblockUI();
+            }
+        });
+    }
+    function enabledTask(id) {
+        if(id == undefined || id== null || id == ""){
+            bootbox.alert("数据错误！");
+            return false;
+        }
+        App.blockUI({message:"处理中...",boxed: !0});
+        $.ajax({
+            "url":"/api/task/enabledTask",
+            "type":"GET",
+            "data":{
+                "id":id,
+            },
+            "success":function (res) {
+
+            },
+            "error":function (e) {
+
+            },
+            "complete":function (c) {
+                bootbox.alert(c.responseJSON.message);
+                App.unblockUI();
+                $("#taskDataTable").dataTable().api().ajax.reload();
+            }
+        });
+    }
+    function stopTask(id) {
+        if(id == undefined || id== null || id == ""){
+            bootbox.alert("数据错误！");
+            return false;
+        }
+        App.blockUI({message:"处理中...",boxed: !0});
+        $.ajax({
+            "url":"/api/task/stopTask",
+            "type":"GET",
+            "data":{
+                "id":id,
+            },
+            "success":function (res) {
+
+            },
+            "error":function (e) {
+
+            },
+            "complete":function (c) {
+                bootbox.alert(c.responseJSON.message);
+                App.unblockUI();
+                $("#taskDataTable").dataTable().api().ajax.reload();
+            }
+        });
+    }
+    function manualExecute(id) {
+        if(id == undefined || id== null || id == ""){
+            bootbox.alert("数据错误！");
+            return false;
+        }
+        App.blockUI({message:"处理中...",boxed: !0});
+        $.ajax({
+            "url":"/api/task/manualExecute",
+            "type":"GET",
+            "data":{
+                "id":id,
+            },
+            "success":function (res) {
+
+            },
+            "error":function (e) {
+
+            },
+            "complete":function (c) {
+                bootbox.alert(c.responseJSON.message);
+                App.unblockUI();
+                $("#taskDataTable").dataTable().api().ajax.reload();
+            }
+        });
+    }
+</script>
+</body>
+</html>

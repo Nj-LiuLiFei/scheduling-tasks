@@ -1,0 +1,35 @@
+server:
+  port: 8080
+  tomcat:
+    uri-encoding: UTF-8
+spring:
+  http:
+    encoding:
+      charset: UTF-8 #指定http请求和相应的Charset，默认: UTF-8
+      enabled: true #是否开启http的编码支持，默认为true
+      force: true   #是否强制对http请求和响应进行编码，默认为true
+  messages:
+    encoding: UTF-8 #设定Message bundles的编码，默认: UTF-8
+  thymeleaf:
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    servlet:
+      content-type: text/html;charset=UTF-8
+    cache: false
+    prefix: classpath:/templates/
+  datasource:
+    url: jdbc:mysql://localhost:3306/scheduling_task?useSSL=true&useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+    dbcp2:
+      max-idle: 10
+      min-idle: 5
+      max-wait-millis: 5000
+      initial-size: 5
+mybatis:
+  type-aliases-package: cn.liulifei.schedulingtasks.mapper
+  mapper-locations: classpath:/mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

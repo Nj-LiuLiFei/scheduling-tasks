@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.liulifei.schedulingtasks.mapper.TaskMapper">
+    <resultMap id="pagingQueryTasksResultMap" type="cn.liulifei.schedulingtasks.entity.TaskEntity">
+        <result column="id" property="id"></result>
+        <result column="class_name" property="className"></result>
+        <result column="execution_time" property="executionTime"></result>
+        <result column="task_name" property="taskName"></result>
+        <result column="task_describe" property="taskDescribe"></result>
+        <result column="state" property="state"></result>
+        <result column="gmt_create" property="createTime"></result>
+        <result column="gmt_modified" property="modifiedTime"></result>
+    </resultMap>
+    <resultMap id="getTaskClassNameAndTaskExecutionTimeByIdResultMap" type="cn.liulifei.schedulingtasks.entity.TaskEntity">
+        <result column="id" property="id"></result>
+        <result column="class_name" property="className"></result>
+        <result column="execution_time" property="executionTime"></result>
+        <result column="task_name" property="taskName"></result>
+        <result column="state" property="state"></result>
+    </resultMap>
+    <resultMap id="getIdClassNameExecutionTimeNameDescribeByIdResultMap" type="cn.liulifei.schedulingtasks.entity.TaskEntity">
+        <result column="id" property="id"></result>
+        <result column="class_name" property="className"></result>
+        <result column="execution_time" property="executionTime"></result>
+        <result column="task_name" property="taskName"></result>
+        <result column="task_describe" property="taskDescribe"></result>
+    </resultMap>
+    <resultMap id="getNameByClassNameResultMap" type="cn.liulifei.schedulingtasks.entity.TaskEntity">
+        <result column="id" property="id"></result>
+        <result column="task_name" property="taskName"></result>
+    </resultMap>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO task(class_name,execution_time,task_name,task_describe,state,is_deleted,gmt_create,gmt_modified)
+        VALUES (#{className},#{executionTime},#{taskName},#{taskDescribe},3,0,#{createTime},NULL);
+    </insert>
+    <select id="pagingQueryTasks" resultMap="pagingQueryTasksResultMap">
+        <bind name="taskNameLIKE" value="'%' + taskName + '%'" />
+        SELECT id,class_name,execution_time,task_name,
+        task_describe,state,gmt_create,gmt_modified FROM task
+        <where>
+            is_deleted = 0
+            <if test="state!=0">AND state=#{state}</if>
+            <if test="taskName!=null and taskName.length>0">AND task_name LIKE #{taskNameLIKE}</if>
+        </where>
+        ORDER BY gmt_create DESC
+    </select>
+    <select id="getClassNameExecutionTimeById" parameterType="int" resultMap="getTaskClassNameAndTaskExecutionTimeByIdResultMap">
+        SELECT id,class_name,execution_time,task_name,state FROM task WHERE is_deleted = 0 AND id = #{id}
+    </select>
+    <select id="getIdClassNameExecutionTimeNameDescribeById" parameterType="int" resultMap="getIdClassNameExecutionTimeNameDescribeByIdResultMap">
+        SELECT id,class_name,execution_time,task_name,task_describe FROM task WHERE is_deleted = 0 AND id = #{id}
+    </select>
+    <select id="getIdNameByClassName" resultMap="getNameByClassNameResultMap" parameterType="String">
+        SELECT id,task_name FROM task WHERE is_deleted = 0 AND class_name = #{cName}
+    </select>
+    <update id="delete" parameterType="cn.liulifei.schedulingtasks.entity.TaskEntity">
+        UPDATE task SET is_deleted = 1,gmt_modified = #{modifiedTime} WHERE is_deleted = 0 AND id = #{id}
+    </update>
+    <update id="updateTaskStateModifiedTime" parameterType="cn.liulifei.schedulingtasks.entity.TaskEntity">
+        UPDATE task SET state = 1,gmt_modified = #{modifiedTime} WHERE is_deleted = 0 AND state = 3 AND id = #{id}
+    </update>
+    <update id="updateTask" parameterType="cn.liulifei.schedulingtasks.entity.TaskEntity">
+        UPDATE task SET class_name = #{className},execution_time = #{executionTime},
+        task_name = #{taskName},task_describe = #{taskDescribe},
+        gmt_modified = #{modifiedTime} WHERE is_deleted = 0 AND state = 3 AND id = #{id}
+    </update>
+    <update id="updateTaskState" parameterType="int">
+        UPDATE task SET state = 3 WHERE is_deleted = 0 AND id = #{id}
+    </update>
+</mapper>
